@@ -46,6 +46,7 @@ if __name__ == '__main__':
             if i > 20:
                 break
 
+    print(f'Original size: {image.shape[:2]}')
     image, scale = resize_image(image)
     points = OrderedDict()
     select = Select.init
