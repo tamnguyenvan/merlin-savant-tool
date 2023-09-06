@@ -1,12 +1,12 @@
 import os
 from sys import argv
+import argparse
 import cv2
 import numpy as np
 from enum import Enum
 from collections import OrderedDict
 
 from utils import RandColorIterator
-
 
 
 def resize_image(image, max_size: int = 1280):
@@ -35,10 +35,16 @@ def click_callback(event, x, y, flags, param):
 
 
 if __name__ == '__main__':
-    if os.path.isfile(argv[1]):
-        image = cv2.imread(argv[1])
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--source')
+    parser.add_argument('--target_size', type=str, default=None)
+    args = parser.parse_args()
+
+    if os.path.isfile(args.source):
+        image = cv2.imread(args.source)
+        print(image)
     else:
-        cap = cv2.VideoCapture(argv[1])
+        cap = cv2.VideoCapture(args.source)
         i = 0
         while True:
             _, image = cap.read()
@@ -47,6 +53,14 @@ if __name__ == '__main__':
                 break
 
     print(f'Original size: {image.shape[:2]}')
+    target_size = None
+    if args.target_size is not None:
+        target_size = eval(args.target_size)
+        print(f'Target size: {target_size}')
+
+    if target_size is not None:
+        image = cv2.resize(image, target_size)
+
     image, scale = resize_image(image)
     points = OrderedDict()
     select = Select.init
